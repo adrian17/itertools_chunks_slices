@@ -11,7 +11,7 @@ setup(
     description='itertools: chunks() and slices()',
     ext_modules=[module],
     test_suite="tests",
-    url="https://github.com/adrian17/",
+    url="https://github.com/adrian17/itertools_chunks_slices",
     author="Adrian Wielgosik",
     author_email="adrian.wielgosik@gmail.com",
     classifiers=[
