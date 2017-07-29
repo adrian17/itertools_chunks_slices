@@ -1,5 +1,9 @@
 # Chunks & slices for itertools
 
+[![PyPI](https://img.shields.io/pypi/v/itertools_chunks_slices.svg)](https://pypi.python.org/pypi/itertools_chunks_slices)
+[![PyPI](https://img.shields.io/pypi/pyversions/itertools_chunks_slices.svg)](https://pypi.python.org/pypi/itertools_chunks_slices)
+[![PyPI](https://img.shields.io/pypi/format/itertools_chunks_slices.svg)](https://pypi.python.org/pypi/itertools_chunks_slices)
+
     from itertools_chunks_slices import chunks, slices
 	data = [1, 2, 3, 4, 5, 6]
     for chunk in chunks(data, 3):
