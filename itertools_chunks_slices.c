@@ -11,23 +11,30 @@ static PyTypeObject chunks_type;
 static PyObject *
 chunks_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
+    static char *kwargs[] = {"iterable", "n", NULL};
     chunksobject *ro;
     PyObject *seq;
     PyObject *iterator;
     Py_ssize_t cnt = -1;
 
-    if (!PyArg_ParseTuple(args, "On:chunks", &seq, &cnt))
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "On:chunks", kwargs,
+                                     &seq, &cnt))
         return NULL;
 
-    // TODO: cnt < 0
+    if (cnt <= 0) {
+        PyErr_SetString(PyExc_ValueError, "n must be positive");
+        return NULL;
+    }
 
     iterator = PyObject_GetIter(seq);
     if (iterator == NULL)
         return NULL;
 
     ro = (chunksobject *)type->tp_alloc(type, 0);
-    if (ro == NULL)
+    if (ro == NULL) {
+        Py_DECREF(iterator);
         return NULL;
+    }
 
     ro->iterator = iterator;
     ro->cnt = cnt;
@@ -142,23 +149,30 @@ static PyTypeObject slices_type;
 static PyObject *
 slices_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
+    static char *kwargs[] = {"iterable", "n", NULL};
     slicesobject *ro;
     PyObject *seq;
     PyObject *iterator;
     Py_ssize_t cnt = -1;
 
-    if (!PyArg_ParseTuple(args, "On:slices", &seq, &cnt))
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "On:slices", kwargs,
+                                     &seq, &cnt))
         return NULL;
 
-    // TODO: cnt < 0
+    if (cnt <= 0) {
+        PyErr_SetString(PyExc_ValueError, "n must be positive");
+        return NULL;
+    }
 
     iterator = PyObject_GetIter(seq);
     if (iterator == NULL)
         return NULL;
 
     ro = (slicesobject *)type->tp_alloc(type, 0);
-    if (ro == NULL)
+    if (ro == NULL) {
+        Py_DECREF(iterator);
         return NULL;
+    }
 
     ro->iterator = iterator;
     ro->previous = NULL;

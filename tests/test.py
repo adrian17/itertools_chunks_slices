@@ -73,6 +73,13 @@ class TestChunks(unittest.TestCase):
         for func in functions:
             with self.assertRaises(TypeError):
                 func()
+        functions = [
+            lambda: chunks([], 0),
+            lambda: chunks([], -1),
+        ]
+        for func in functions:
+            with self.assertRaises(ValueError):
+                func()
 
     def test_repr(self):
         self.assertRegex(
@@ -142,6 +149,13 @@ class TestSlices(unittest.TestCase):
         ]
         for func in functions:
             with self.assertRaises(TypeError):
+                func()
+        functions = [
+            lambda: slices([], 0),
+            lambda: slices([], -1),
+        ]
+        for func in functions:
+            with self.assertRaises(ValueError):
                 func()
 
     def test_repr(self):

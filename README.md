@@ -19,4 +19,3 @@
 ## Todo
 
 - behavior on non-exact chunk size
-- incorrect argument handling
