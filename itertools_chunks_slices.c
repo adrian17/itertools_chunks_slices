@@ -204,7 +204,6 @@ slices_next(slicesobject *ro)
                 Py_DECREF(tuple);
                 return NULL;
             }
-            Py_INCREF(elem);
             PyTuple_SET_ITEM(tuple, i, elem);
         }
     } else {
@@ -213,13 +212,14 @@ slices_next(slicesobject *ro)
             Py_DECREF(tuple);
             return NULL;
         }
-        for (int i = 0; i < cnt-1; ++i)
-            PyTuple_SET_ITEM(tuple, i, PyTuple_GET_ITEM(previous, i+1));
+        for (int i = 0; i < cnt-1; ++i) {
+            PyObject *temp = PyTuple_GET_ITEM(previous, i+1);
+            Py_INCREF(temp);
+            PyTuple_SET_ITEM(tuple, i, temp);
+        }
 
-        Py_INCREF(elem);
         PyTuple_SET_ITEM(tuple, cnt-1, elem);
 
-        Py_XDECREF(PyTuple_GET_ITEM(previous, 0));
         Py_DECREF(previous);
     }
     Py_INCREF(tuple);

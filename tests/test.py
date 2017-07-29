@@ -3,6 +3,13 @@ import sys
 
 from itertools_chunks_slices import chunks, slices
 
+class DestructionTester:
+    alive = 0
+    def __init__(self):
+        DestructionTester.alive += 1
+    def __del__(self):
+        DestructionTester.alive -= 1
+
 class TestChunks(unittest.TestCase):
     def test_simple(self):
         lst = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -35,6 +42,21 @@ class TestChunks(unittest.TestCase):
         self.assertEqual(next(it), (1, 2))
         del lst
         self.assertEqual(next(it), (3, 4))
+
+    def test_item_refleak(self):
+        def gen():
+            yield DestructionTester()
+            yield DestructionTester()
+            yield DestructionTester()
+        it = chunks(gen(), 2)
+        self.assertEqual(DestructionTester.alive, 0)
+        item = next(it)
+        self.assertEqual(DestructionTester.alive, 2)
+        del item
+        self.assertEqual(DestructionTester.alive, 0)
+        with self.assertRaises(StopIteration):
+            next(it)
+        self.assertEqual(DestructionTester.alive, 0)
 
     def test_args(self):
         functions = [
@@ -86,6 +108,25 @@ class TestSlices(unittest.TestCase):
         self.assertEqual(next(it), (1, 2))
         del lst
         self.assertEqual(next(it), (2, 3))
+
+    def test_item_refleak(self):
+        def gen():
+            yield DestructionTester()
+            yield DestructionTester()
+            yield DestructionTester()
+        it = slices(gen(), 2)
+        self.assertEqual(DestructionTester.alive, 0)
+        item = next(it)
+        self.assertEqual(DestructionTester.alive, 2)
+        item = next(it)
+        self.assertEqual(DestructionTester.alive, 2)
+        del item
+        self.assertEqual(DestructionTester.alive, 2)
+        with self.assertRaises(StopIteration):
+            next(it)
+        self.assertEqual(DestructionTester.alive, 2)
+        del it
+        self.assertEqual(DestructionTester.alive, 0)
 
     def test_args(self):
         functions = [
